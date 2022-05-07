@@ -23,9 +23,9 @@
     ],
     "scripts": {
         "install": "cmake-js compile --CDCMAKE_EXPORT_COMPILE_COMMANDS --cxx=clang++ --CDCMAKE_CXX_FLAGS=-stdlib=libc++ --CDCMAKE_EXE_LINKER_FLAGS=\"-stdlib=libc++ -lc++abi -fuse-ld=lld\"",
-        "build": "tsc -p ./src",
-        "build:watch": "tsc -w -p ./src",
-        "prepublishOnly": "pnpm build",
+        "build": "tsc -p ./",
+        "build:watch": "tsc -w -p ./",
+        "prepublishOnly": "npm run build",
         "clean": "rm -rf ./build"
     },
     "dependencies": {
