@@ -1,5 +1,7 @@
 # simple-sandbox
 
+[![Build](https://github.com/JudgeQ-Dev/simple-sandbox/actions/workflows/build.yml/badge.svg)](https://github.com/JudgeQ-Dev/simple-sandbox/actions/workflows/build.yml)
+
 A simple linux sandbox with Node.js API.
 
 ## Prerequisites
