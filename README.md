@@ -1,6 +1,8 @@
 # simple-sandbox
 
-[![Build](https://github.com/JudgeQ-Dev/simple-sandbox/actions/workflows/build.yml/badge.svg)](https://github.com/JudgeQ-Dev/simple-sandbox/actions/workflows/build.yml)
+[![Clang Format](https://github.com/JudgeQ-Dev/simple-sandbox/actions/workflows/clang_format.yml/badge.svg)](https://github.com/JudgeQ-Dev/simple-sandbox/actions/workflows/clang_format.yml)
+[![Lint](https://github.com/JudgeQ-Dev/simple-sandbox/actions/workflows/lint.yml/badge.svg)](https://github.com/JudgeQ-Dev/simple-sandbox/actions/workflows/lint.yml)
+[![Test](https://github.com/JudgeQ-Dev/simple-sandbox/actions/workflows/test.yml/badge.svg)](https://github.com/JudgeQ-Dev/simple-sandbox/actions/workflows/test.yml)
 
 A simple linux sandbox with Node.js API.
 
