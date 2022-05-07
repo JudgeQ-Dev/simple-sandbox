@@ -5,19 +5,20 @@ A simple linux sandbox with Node.js API.
 ## Prerequisites
 
 ### Packages
+
 You need to have the `build-essentials` (`g++`, `make`, etc.) and the `fmt` library installed in your system in order to build the C++ part.
 
 The minimal `g++` version required is `g++-8`. A newer version of `clang++` with C++17 file system support is recommended.
 
-Install them by (in Ubuntu 18.04):
+Install them by (in Ubuntu 20.04):
 
 ```bash
-apt install build-essential clang++-9 libfmt-dev
+apt install build-essential libfmt-dev clang++-11
 ```
 
 ### Kernel
 
-You need to have the memory swap account (disabled by default in Debian 8) enabled with your kernel. You can verify this by checking the existence of `/sys/fs/cgroup/memory/memory.memsw.usage_in_bytes` 
+You need to have the memory swap account (disabled by default in Debian 8) enabled with your kernel. You can verify this by checking the existence of `/sys/fs/cgroup/memory/memory.memsw.usage_in_bytes`
 
 If that file does not exist, then you may have to turn on that with your grub.
 
@@ -27,7 +28,7 @@ Add `swapaccount=1` to `GRUB_CMDLINE_LINUX_DEFAULT` section in `/etc/default/gru
 GRUB_CMDLINE_LINUX_DEFAULT="quiet splash cgroup_enable=memory swapaccount=1"
 ```
 
-Some distro [enables cgroup v2 by default in their new versions](https://rootlesscontaine.rs/getting-started/common/cgroup2/), including Arch Linux (since April 2021), Fedora (since 31) and Debian. If you cannot find the directory `/sys/fs/cgroup/memory/`, this is the case for you. In this case, you also need to add the parameter `systemd.unified_cgroup_hierarchy=0` to enable cgroup v1: 
+Some distro [enables cgroup v2 by default in their new versions](https://rootlesscontaine.rs/getting-started/common/cgroup2/), including Arch Linux (since April 2021), Fedora (since 31) and Debian. If you cannot find the directory `/sys/fs/cgroup/memory/`, this is the case for you. In this case, you also need to add the parameter `systemd.unified_cgroup_hierarchy=0` to enable cgroup v1:
 
 ```bash
 GRUB_CMDLINE_LINUX_DEFAULT="quiet splash cgroup_enable=memory swapaccount=1 systemd.unified_cgroup_hierarchy=0"
