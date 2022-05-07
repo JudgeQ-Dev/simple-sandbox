@@ -150,11 +150,13 @@ void GetUserEntryInSandbox(const fs::path &rootfs, const std::string username, s
         if (username == user->pw_name)
             break;
 
-    if (user == nullptr)
-        if (errno == ENOENT)
+    if (user == nullptr) {
+        if (errno == ENOENT) {
             throw std::invalid_argument(format("No such user: {}", username));
-        else
+        } else {
             throw std::system_error(errno, std::system_category(), "fgetpwent_r");
+        }
+    }
 }
 
 static int ChildProcess(void *param_ptr)
@@ -274,6 +276,8 @@ static int ChildProcess(void *param_ptr)
     {
         assert(false);
     }
+
+    return 0;
 }
 
 // The child stack is only used before `execvpe`, so it does not need much space.
