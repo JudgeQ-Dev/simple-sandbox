@@ -3,6 +3,8 @@
 [![Clang Format](https://github.com/JudgeQ-Dev/simple-sandbox/actions/workflows/clang_format.yml/badge.svg)](https://github.com/JudgeQ-Dev/simple-sandbox/actions/workflows/clang_format.yml)
 [![Lint](https://github.com/JudgeQ-Dev/simple-sandbox/actions/workflows/lint.yml/badge.svg)](https://github.com/JudgeQ-Dev/simple-sandbox/actions/workflows/lint.yml)
 [![Test](https://github.com/JudgeQ-Dev/simple-sandbox/actions/workflows/test.yml/badge.svg)](https://github.com/JudgeQ-Dev/simple-sandbox/actions/workflows/test.yml)
+[![GitHub release](https://img.shields.io/github/release/JudgeQ-Dev/simple-sandbox.svg)](https://GitHub.com/JudgeQ-Dev/simple-sandbox/releases/)
+
 
 A simple linux sandbox with Node.js API.
 
