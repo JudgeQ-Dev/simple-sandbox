@@ -47,17 +47,20 @@ To enjoy the modified kernel.
 Pull the repository to somewhere on your computer and run
 
 ```bash
-CXX=clang++-9 yarn install # Install required packages and compile C++ code with the clang++-9 compiler
-yarn run build # Compile typescript code.
+# Install required packages and compile C++ code with the clang++-11 compiler
+CXX=clang++-11 pnpm install
+# Compile typescript code.
+pnpm run build
 ```
 
-To build the project. If you don't want to use `yarn`, just change `yarn` to `npm`.
+To build the project. If you don't want to use `pnpm`, just change `pnpm` to `npm` or `yarn`.
 
-You can use `yarn run build:watch` to watch for the change of typescript file.
+You can use `pnpm run build:watch` to watch for the change of typescript file.
 
 ## Use
 
 The library is with a simple API.
+
 To start the sandbox, use the following code:
 
 ```js
@@ -81,7 +84,7 @@ To wait for the sandboxed process to end, use the `waitForStop()` function, whic
 myProcess.waitForStop().then((result) => {
     console.log("OK! " + JSON.stringify(result));
 }).catch((err) => {
-    console.log("Whooops!" + err.toString());
+    console.log("oops!" + err.toString());
 });
 ```
 

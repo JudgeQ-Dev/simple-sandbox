@@ -63,6 +63,7 @@
     "cSpell.words": [
         "CDCMAKE",
         "cmake",
+        "mkdir",
         "pnpm",
         "rootfs",
         "sandboxed"
