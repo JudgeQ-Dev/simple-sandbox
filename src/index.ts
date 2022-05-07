@@ -1,13 +1,13 @@
-import { SandboxParameter } from './interfaces';
-import nativeAddon from './nativeAddon';
-import { SandboxProcess } from './sandboxProcess';
-import { existsSync } from 'fs';
-import * as randomString from 'randomstring';
-import * as path from 'path';
+import { SandboxParameter } from "./interfaces";
+import nativeAddon from "./nativeAddon";
+import { SandboxProcess } from "./sandboxProcess";
+import { existsSync } from "fs";
+import * as randomString from "randomstring";
+import * as path from "path";
 
-export * from './interfaces';
+export * from "./interfaces";
 
-if (!existsSync('/sys/fs/cgroup/memory/memory.memsw.usage_in_bytes')) {
+if (!existsSync("/sys/fs/cgroup/memory/memory.memsw.usage_in_bytes")) {
     throw new Error("Your linux kernel doesn't support memory-swap account. Please turn it on following the readme.");
 }
 
@@ -27,14 +27,13 @@ export function startSandbox(parameter: SandboxParameter): SandboxProcess {
         } catch (e) {
             // Retry if the child process fails
             if ("message" in e && typeof e.message === "string" && e.message.startsWith("The child process ")) {
-                if (retryTimes-- > 0)
-                    continue;
+                if (retryTimes-- > 0) continue;
             }
 
             throw e;
         }
     }
-};
+}
 
 export function getUidAndGidInSandbox(rootfs: string, username: string): { uid: number; gid: number } {
     try {

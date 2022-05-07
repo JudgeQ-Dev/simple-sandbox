@@ -35,7 +35,7 @@ export interface SandboxParameter {
 
     // Whether to redirect the stdio before chroot (and setuid).
     // True indicates that stdio should be redirected before chrooting.
-    // In this way, the path is relative to the current directory in the outside world, 
+    // In this way, the path is relative to the current directory in the outside world,
     // and may be anything like `/dev/stdout` to write output to the console.
     // False indicates that stdio should be redirected after chrooting.
     // In this way, the path is relative to the `/sandbox/working` directory, and the permission will be checked when creating the output files.
@@ -57,13 +57,13 @@ export interface SandboxParameter {
     executable: string;
 
     // The file to be redirected as the Standard Input / Output of your sandboxed program.
-    // If redirectBeforeChroot is `true`, this will be the path in the outside world, 
+    // If redirectBeforeChroot is `true`, this will be the path in the outside world,
     // or else it will be relative to the working directory of the sandbox (relative path specified),
     // or absolute path in the sandbox (absolute path specified).
     // If it is not specified, the stdio will be redirected to /dev/null.
-    stdin?: string | Number;
-    stdout?: string | Number;
-    stderr?: string | Number;
+    stdin?: string | number;
+    stdout?: string | number;
+    stderr?: string | number;
 
     // The UID and GID to run the sandboxed program with.
     // Please make sure that this user have the read permission to the chroot and binary directory,
@@ -95,7 +95,7 @@ export interface SandboxParameter {
     // If set, a `setrlimit` will be run to limit the stack size.
     // -1 indicates no limit.
     stackSize?: number;
-};
+}
 
 export enum SandboxStatus {
     Unknown = 0,
@@ -104,12 +104,12 @@ export enum SandboxStatus {
     MemoryLimitExceeded = 3,
     RuntimeError = 4,
     Cancelled = 5,
-    OutputLimitExceeded = 6
-};
+    OutputLimitExceeded = 6,
+}
 
 export interface SandboxResult {
     status: SandboxStatus;
     time: number;
     memory: number;
     code: number;
-};
+}

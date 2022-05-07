@@ -1,43 +1,44 @@
-import { SandboxParameter, SandboxResult, SandboxStatus } from './interfaces';
-import sandboxAddon from './nativeAddon';
-import * as utils from './utils';
+import { SandboxParameter, SandboxResult, SandboxStatus } from "./interfaces";
+import sandboxAddon from "./nativeAddon";
+import * as utils from "./utils";
 
 export class SandboxProcess {
     private readonly cancellationToken: NodeJS.Timer = null;
     private readonly stopCallback: () => void;
 
-    private countedCpuTime: number = 0;
-    private actualCpuTime: number = 0;
-    private timeout: boolean = false;
-    private cancelled: boolean = false;
+    private countedCpuTime = 0;
+    private actualCpuTime = 0;
+    private timeout = false;
+    private cancelled = false;
     private waitPromise: Promise<SandboxResult> = null;
 
-    public running: boolean = true;
+    public running = true;
 
-    constructor(
-        public readonly parameter: SandboxParameter,
-        public readonly pid: number,
-        execParam: ArrayBuffer
-    ) {
+    constructor(public readonly parameter: SandboxParameter, public readonly pid: number, execParam: ArrayBuffer) {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const myFather = this;
         // Stop the sandboxed process on Node.js exit.
         this.stopCallback = () => {
             myFather.stop();
-        }
+        };
 
-        let checkIfTimedOut = () => { };
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        let checkIfTimedOut = () => {};
         if (this.parameter.time !== -1) {
             // Check every 50ms.
             const checkInterval = Math.min(this.parameter.time / 10, 50);
             let lastCheck = new Date().getTime();
+
             checkIfTimedOut = () => {
-                let current = new Date().getTime();
+                const current = new Date().getTime();
                 const spent = current - lastCheck;
                 lastCheck = current;
-                const val: number = Number(sandboxAddon.getCgroupProperty("cpuacct", myFather.parameter.cgroup, "cpuacct.usage"));
+                const val = Number(
+                    sandboxAddon.getCgroupProperty("cpuacct", myFather.parameter.cgroup, "cpuacct.usage"),
+                );
                 myFather.countedCpuTime += Math.max(
-                    val - myFather.actualCpuTime,  // The real time, or if less than 40%,
-                    utils.milliToNano(spent) * 0.4 // 40% of actually elapsed time
+                    val - myFather.actualCpuTime, // The real time, or if less than 40%,
+                    utils.milliToNano(spent) * 0.4, // 40% of actually elapsed time
                 );
                 myFather.actualCpuTime = val;
 
@@ -47,6 +48,7 @@ export class SandboxProcess {
                     myFather.stop();
                 }
             };
+
             this.cancellationToken = setInterval(checkIfTimedOut, checkInterval);
         }
 
@@ -59,41 +61,59 @@ export class SandboxProcess {
                     } catch (e) {
                         console.log("Error cleaning up error sandbox:", e);
                     }
-                    rej(err);    
+                    rej(err);
                 } else {
                     try {
-                        const memUsageWithCache: number = Number(sandboxAddon.getCgroupProperty("memory", myFather.parameter.cgroup, "memory.memsw.max_usage_in_bytes"));
-                        const cache: number = Number(sandboxAddon.getCgroupProperty2("memory", myFather.parameter.cgroup, "memory.stat", "cache"));
+                        const memUsageWithCache = Number(
+                            sandboxAddon.getCgroupProperty(
+                                "memory",
+                                myFather.parameter.cgroup,
+                                "memory.memsw.max_usage_in_bytes",
+                            ),
+                        );
+
+                        const cache = Number(
+                            sandboxAddon.getCgroupProperty2(
+                                "memory",
+                                myFather.parameter.cgroup,
+                                "memory.stat",
+                                "cache",
+                            ),
+                        );
+
                         const memUsage = memUsageWithCache - cache;
-    
-                        myFather.actualCpuTime = Number(sandboxAddon.getCgroupProperty("cpuacct", myFather.parameter.cgroup, "cpuacct.usage"));
+
+                        myFather.actualCpuTime = Number(
+                            sandboxAddon.getCgroupProperty("cpuacct", myFather.parameter.cgroup, "cpuacct.usage"),
+                        );
+
                         myFather.cleanup();
-    
+
                         const result: SandboxResult = {
                             status: SandboxStatus.Unknown,
                             time: myFather.actualCpuTime,
                             memory: memUsage,
-                            code: runResult.code
+                            code: runResult.code,
                         };
-    
+
                         if (myFather.timeout || myFather.actualCpuTime > utils.milliToNano(myFather.parameter.time)) {
                             result.status = SandboxStatus.TimeLimitExceeded;
                         } else if (myFather.cancelled) {
                             result.status = SandboxStatus.Cancelled;
                         } else if (myFather.parameter.memory != -1 && memUsage > myFather.parameter.memory) {
                             result.status = SandboxStatus.MemoryLimitExceeded;
-                        } else if (runResult.status === 'signaled') {
+                        } else if (runResult.status === "signaled") {
                             result.status = SandboxStatus.RuntimeError;
-                        } else if (runResult.status === 'exited') {
+                        } else if (runResult.status === "exited") {
                             result.status = SandboxStatus.OK;
                         }
-    
+
                         res(result);
                     } catch (e) {
                         rej(e);
-                    }    
+                    }
                 }
-            })
+            });
         });
     }
 
@@ -108,7 +128,7 @@ export class SandboxProcess {
             if (this.cancellationToken) {
                 clearInterval(this.cancellationToken);
             }
-            process.removeListener('exit', this.stopCallback);
+            process.removeListener("exit", this.stopCallback);
             this.removeCgroup();
             this.running = false;
         }
@@ -124,4 +144,4 @@ export class SandboxProcess {
     async waitForStop(): Promise<SandboxResult> {
         return await this.waitPromise;
     }
-};
+}
