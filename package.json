@@ -1,21 +1,21 @@
 {
-    "name": "simple-sandbox",
+    "name": "@judgeq/simple-sandbox",
     "version": "0.3.23",
     "description": "A simple sandbox for Node.js using Linux namespaces and cgroup.",
-    "packageManager": "pnpm@7.0.0",
-    "main": "lib/index.js",
-    "types": "lib/index.d.ts",
-    "author": "t123yh",
+    "author": "JudgeQ Develop Team",
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/t123yh/simple-sandbox"
+        "url": "https://github.com/JudgeQ-Dev/simple-sandbox"
     },
     "keywords": [
         "sandbox",
         "chroot",
         "linux"
     ],
+    "packageManager": "pnpm@7.0.0",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
     "files": [
         "CMakeLists.txt",
         "/native",
