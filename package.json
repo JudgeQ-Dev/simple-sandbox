@@ -23,10 +23,11 @@
     ],
     "scripts": {
         "install": "cmake-js compile --CDCMAKE_EXPORT_COMPILE_COMMANDS --cxx=clang++ --CDCMAKE_CXX_FLAGS=-stdlib=libc++ --CDCMAKE_EXE_LINKER_FLAGS=\"-stdlib=libc++ -lc++abi -fuse-ld=lld\"",
+        "clean": "rm -rf ./build",
         "build": "tsc -p ./",
         "build:watch": "tsc -w -p ./",
         "prepublishOnly": "npm run build",
-        "clean": "rm -rf ./build"
+        "release": "bumpp --commit --push --tag && npm publish"
     },
     "dependencies": {
         "bindings": "^1.5.0",
@@ -39,6 +40,7 @@
         "@types/node": "^14.14.6",
         "@typescript-eslint/eslint-plugin": "^5.22.0",
         "@typescript-eslint/parser": "^5.22.0",
+        "bumpp": "^7.1.1",
         "eslint": "^8.15.0",
         "prettier": "^2.6.2",
         "rimraf": "^3.0.2",
