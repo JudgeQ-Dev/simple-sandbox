@@ -82,3 +82,4 @@ tags
 /build
 /lib
 /dist
+.cache
