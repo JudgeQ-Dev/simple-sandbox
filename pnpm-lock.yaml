@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@types/bindings': ^1.5.1
   '@types/node': ^14.14.6
   bindings: ^1.5.0
   cmake-js: ^6.1.0
@@ -15,10 +16,17 @@ dependencies:
   randomstring: 1.2.2
 
 devDependencies:
+  '@types/bindings': 1.5.1
   '@types/node': 14.18.16
   typescript: 4.6.4
 
 packages:
+
+  /@types/bindings/1.5.1:
+    resolution: {integrity: sha512-8HzueDeoxGXdsJ0Ep7TOXHGN+woRTWa1bAds30r5we7PCC3P5zrSTRknePLn/KYAubgQv5t/1zkonnStHLCWOg==}
+    dependencies:
+      '@types/node': 14.18.16
+    dev: true
 
   /@types/node/14.18.16:
     resolution: {integrity: sha512-X3bUMdK/VmvrWdoTkz+VCn6nwKwrKCFTHtqwBIaQJNx4RUIBBUFXM00bqPz/DsDd+Icjmzm6/tyYZzeGVqb6/Q==}
