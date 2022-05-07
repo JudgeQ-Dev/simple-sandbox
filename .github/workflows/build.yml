@@ -35,6 +35,10 @@ jobs:
           node-version: 16
           cache: pnpm
 
+      - name: Install deps
+        run: |
+          sudo apt install libfmt-dev
+
       - name: Setup
         run: npm i -g @antfu/ni
 
