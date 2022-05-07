@@ -26,10 +26,11 @@
         "typescript": "^4.0.5"
     },
     "scripts": {
-        "install": "cmake-js compile",
+        "install": "cmake-js compile --CDCMAKE_EXPORT_COMPILE_COMMANDS --cxx=clang++ --CDCMAKE_CXX_FLAGS=-stdlib=libc++ --CDCMAKE_EXE_LINKER_FLAGS=\"-stdlib=libc++ -lc++abi -fuse-ld=lld\"",
         "build": "tsc -p ./src",
         "build:watch": "tsc -w -p ./src",
-        "prepublishOnly": "pnpm build"
+        "prepublishOnly": "pnpm build",
+        "clean": "rm -rf ./build"
     },
     "files": [
         "CMakeLists.txt",

@@ -1,7 +1,11 @@
 project(sandbox)
 cmake_minimum_required(VERSION 3.0)
 
+# If use clang11 or above,
+# don't need to manually find stdc++fs
 # find_library(STDCPPFS_LIBRARY stdc++fs)
+
+# apt install libfmt-dev
 find_package(fmt)
 
 set(CMAKE_CXX_STANDARD 17)
