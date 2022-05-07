@@ -3,15 +3,15 @@
 // The libcgroup itself is complicated and not very well documented, so here I implement a new one.
 // This one only fits the sandbox and does not have a general-purpose design.
 
-#include <string>
+#include <filesystem>
 #include <list>
 #include <map>
+#include <string>
 
-struct CgroupInfo
-{
+struct CgroupInfo {
     std::string Controller;
     std::string Group;
-    CgroupInfo(const std::string &controller, const std::string &group); // : Controller(controller), Group(group)
+    CgroupInfo(const std::string &controller, const std::string &group);  // : Controller(controller), Group(group)
 };
 
 // Look for controllers and their mount paths.
@@ -24,7 +24,8 @@ std::list<int64_t> ReadGroupPropertyArray(const CgroupInfo &info, const std::str
 std::map<std::string, int64_t> ReadGroupPropertyMap(const CgroupInfo &info, const std::string &property);
 
 void WriteGroupProperty(const CgroupInfo &info, const std::string &property, int64_t val, bool overwrite = true);
-void WriteGroupProperty(const CgroupInfo &info, const std::string &property, const std::string& val, bool overwrite = true);
+void WriteGroupProperty(
+        const CgroupInfo &info, const std::string &property, const std::string &val, bool overwrite = true);
 void RemoveCgroup(const CgroupInfo &info);
 
 // Kill all existing tasks in a group.

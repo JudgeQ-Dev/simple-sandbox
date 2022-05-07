@@ -1,9 +1,9 @@
 #pragma once
 
-#include <string>
-#include <vector>
 #include <stdexcept>
+#include <string>
 #include <system_error>
+#include <vector>
 
 std::string SignalToString(int signal);
 
@@ -14,10 +14,8 @@ int __Ensure(int XX, const char *file, int line, const char *operation);
 void Ensure0(int XX);
 
 template <typename T>
-T EnsureNot(T ret, T err)
-{
-    if (ret == err)
-    {
+T EnsureNot(T ret, T err) {
+    if (ret == err) {
         int errcode = errno;
         throw std::system_error(errcode, std::system_category());
     }
@@ -25,28 +23,22 @@ T EnsureNot(T ret, T err)
 }
 
 template <typename T>
-T EnsureNot(T ret, T err, const std::string &msg)
-{
-    if (ret == err)
-    {
+T EnsureNot(T ret, T err, const std::string &msg) {
+    if (ret == err) {
         int errcode = errno;
         throw std::system_error(errcode, std::system_category(), msg);
-                                
     }
     return ret;
 }
 
 template <typename... Args>
-int ptrace_e(Args... args)
-{
+int ptrace_e(Args... args) {
     return ENSURE(ptrace(args...));
 }
 
 template <typename T>
-T CheckNull_Custom(T val, const char *operation)
-{
-    if (val == nullptr)
-    {
+T CheckNull_Custom(T val, const char *operation) {
+    if (val == nullptr) {
         throw std::runtime_error(std::string("Operation ") + std::string(operation) + std::string(" returned null."));
     }
     return val;

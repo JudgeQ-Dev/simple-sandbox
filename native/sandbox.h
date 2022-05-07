@@ -1,25 +1,23 @@
 #pragma once
 
+#include <pwd.h>
+#include <unistd.h>
+#include <filesystem>
 #include <string>
 #include <vector>
-#include <filesystem>
-#include <unistd.h>
-#include <pwd.h>
 
 enum RunStatus {
-    EXITED = 0, // App exited normally.
-    SIGNALED = 01, // App is kill by some signal.
+    EXITED = 0,     // App exited normally.
+    SIGNALED = 01,  // App is kill by some signal.
 };
 
-struct ExecutionResult
-{
+struct ExecutionResult {
     int status;
     // If exited, this is the exit code; if signaled, this is the signal number.
     int code;
 };
 
-struct MountInfo
-{
+struct MountInfo {
     // The source path on your host machine.
     std::filesystem::path src;
     // The destination path in the sandbox.
@@ -30,26 +28,31 @@ struct MountInfo
     int64_t limit;
 };
 
-struct SandboxParameter
-{
+struct SandboxParameter {
     // Time limit is done by querying cpuacct cgroup every 100ms. This is done in the js code.
 
     int64_t stackSize;
+
     // Memory limit in bytes.
     // -1 for no limit.
     int64_t memoryLimit;
+
     // The maximum child process count created by the executable. Typically less than 10. -1 for no limit.
     int processLimit;
+
     // Redirect stdin / stdout before chrooting.
-    // Useful when debugging; 
+    // Useful when debugging;
     // You can use `socat -d -d pty,raw,echo=0 -` to create a device in /dev/pts and redirect stdio to that pts.
     // And then execute a shell (/bin/sh) in the sandbox to debug problems.
     bool redirectBeforeChroot;
+
     // Mount `/proc`?
     bool mountProc;
+
     // This directory will be chrooted into (`chroot`) before running our binary.
     // Make sure this is not writable by `nobody` user!
     std::filesystem::path chrootDirectory;
+
     // This directory will be changed into (`chdir`) before running the binary.
     std::filesystem::path workingDirectory;
 
@@ -65,16 +68,20 @@ struct SandboxParameter
     // Tip: if you want to run a series of command,
     // You can create a .sh script and execute it.
     std::string executable;
+
     // These are the parameters passed to the guest executable.
     std::vector<std::string> executableParameters;
     std::vector<std::string> environmentVariables;
+
     // This is the input file that will be redirected to the executable as Standard Input.
     // Note that if you specify a relative path, it will be relative to the `/sandbox/working` directory.
     // Or you may specify an absoulete path (though this is usually not not the case).
     // If left empty, no stdin will be redirected.
     std::string stdinRedirection;
+
     // Stdout redirection, same as above.
     std::string stdoutRedirection;
+
     // Same as above.
     std::string stderrRedirection;
 
@@ -84,7 +91,7 @@ struct SandboxParameter
     int stdoutRedirectionFileDescriptor;
     int stderrRedirectionFileDescriptor;
 
-    // The UID and GID the guest executable will be run as. 
+    // The UID and GID the guest executable will be run as.
     uid_t uid;
     gid_t gid;
 
@@ -95,7 +102,8 @@ struct SandboxParameter
     std::string hostname;
 };
 
-void GetUserEntryInSandbox(const std::filesystem::path &rootfs, const std::string username, std::vector<char> &dataBuffer, passwd &entry);
+void GetUserEntryInSandbox(
+        const std::filesystem::path &rootfs, const std::string username, std::vector<char> &dataBuffer, passwd &entry);
 
 void *StartSandbox(const SandboxParameter &, pid_t &);
 

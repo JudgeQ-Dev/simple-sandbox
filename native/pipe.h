@@ -1,13 +1,12 @@
 #pragma once
 
 // Handles RAII of pipe object.
-class PosixPipe
-{
-  public:
+class PosixPipe {
+public:
     PosixPipe(int flags = 0);
     ~PosixPipe();
     int operator[](int);
 
-  private:
+private:
     int fd[2];
 };
