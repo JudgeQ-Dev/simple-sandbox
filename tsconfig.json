@@ -1,16 +1,16 @@
 {
     "compilerOptions": {
         "target": "es2018",
-        "module": "commonjs",
-        "removeComments": true,
-        "preserveConstEnums": true,
-        "sourceMap": true,
-        "outDir": "./lib",
-        "declaration": true,
+        "module": "esnext",
         "lib": [
-            "dom",
-            "es2015",
-            "es2016"
-        ]
+            "esnext"
+        ],
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "strict": true,
+        "strictNullChecks": true,
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "skipDefaultLibCheck": true
     }
 }

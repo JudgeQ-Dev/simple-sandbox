@@ -1,6 +1,7 @@
 {
     "name": "@judgeq/simple-sandbox",
     "version": "0.0.0",
+    "packageManager": "pnpm@7.0.0",
     "description": "A simple sandbox for Node.js using Linux namespaces and cgroup.",
     "author": "JudgeQ Develop Team",
     "license": "MIT",
@@ -13,19 +14,45 @@
         "chroot",
         "linux"
     ],
-    "packageManager": "pnpm@7.0.0",
-    "main": "lib/index.js",
-    "types": "lib/index.d.ts",
+    "main": "./dist/index.mjs",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "require": "./dist/index.cjs",
+            "import": "./dist/index.mjs",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "typesVersions": {
+        "*": {
+            "*": [
+                "./dist/*",
+                "./dist/index.d.ts"
+            ]
+        }
+    },
     "files": [
-        "CMakeLists.txt",
-        "/native",
-        "/lib"
+        "src",
+        "dist",
+        "native",
+        "CMakeLists.txt"
     ],
+    "sideEffects": false,
     "scripts": {
-        "install": "cmake-js compile --CDCMAKE_EXPORT_COMPILE_COMMANDS --cxx=clang++ --CDCMAKE_CXX_FLAGS=-stdlib=libc++ --CDCMAKE_EXE_LINKER_FLAGS=\"-stdlib=libc++ -lc++abi -fuse-ld=lld\"",
+        "install": "cmake-js compile --CDCMAKE_EXPORT_COMPILE_COMMANDS --cc=clang --cxx=clang++ --CDCMAKE_CXX_FLAGS=-stdlib=libc++ --CDCMAKE_EXE_LINKER_FLAGS=\"-stdlib=libc++ -lc++abi -fuse-ld=lld\"",
         "clean": "rm -rf ./build",
-        "build": "tsc -p ./",
-        "build:watch": "tsc -w -p ./",
+        "build": "unbuild",
+        "dev": "unbuild --stub",
+        "start": "esmo src/index.ts",
+        "test": "vitest",
+        "lint": "run-p lint:*",
+        "lint:build": "tsc --noEmit ./src/*.ts",
+        "lint:eslint": "eslint ./src",
+        "lint:style": "prettier --check ./src",
+        "format": "run-p format:*",
+        "format:eslint": "eslint --fix ./src",
+        "format:style": "prettier --write ./src",
         "prepublishOnly": "npm run build",
         "release": "bumpp --commit --push --tag && npm publish"
     },
@@ -38,12 +65,18 @@
     "devDependencies": {
         "@types/bindings": "^1.5.1",
         "@types/node": "^14.14.6",
+        "@types/randomstring": "^1.1.8",
         "@typescript-eslint/eslint-plugin": "^5.22.0",
         "@typescript-eslint/parser": "^5.22.0",
         "bumpp": "^7.1.1",
         "eslint": "^8.15.0",
+        "esmo": "^0.14.1",
+        "npm-run-all": "^4.1.5",
         "prettier": "^2.6.2",
         "rimraf": "^3.0.2",
-        "typescript": "^4.0.5"
+        "typescript": "^4.0.5",
+        "unbuild": "^0.7.4",
+        "vite": "^2.9.8",
+        "vitest": "^0.10.5"
     }
 }

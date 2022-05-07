@@ -24,15 +24,21 @@ export function startSandbox(parameter: SandboxParameter): SandboxProcess {
     while (1) {
         try {
             return doStart();
-        } catch (e) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (e: any) {
             // Retry if the child process fails
             if ("message" in e && typeof e.message === "string" && e.message.startsWith("The child process ")) {
-                if (retryTimes-- > 0) continue;
+                if (retryTimes-- > 0) {
+                    continue;
+                }
             }
 
             throw e;
         }
     }
+
+    // won't get here
+    return doStart();
 }
 
 export function getUidAndGidInSandbox(rootfs: string, username: string): { uid: number; gid: number } {

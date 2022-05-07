@@ -3,14 +3,14 @@ import sandboxAddon from "./nativeAddon";
 import * as utils from "./utils";
 
 export class SandboxProcess {
-    private readonly cancellationToken: NodeJS.Timer = null;
+    private readonly cancellationToken: NodeJS.Timer = null as unknown as NodeJS.Timer;
     private readonly stopCallback: () => void;
 
     private countedCpuTime = 0;
     private actualCpuTime = 0;
     private timeout = false;
     private cancelled = false;
-    private waitPromise: Promise<SandboxResult> = null;
+    private waitPromise: Promise<SandboxResult> = null as unknown as Promise<SandboxResult>;
 
     public running = true;
 
@@ -53,7 +53,7 @@ export class SandboxProcess {
         }
 
         this.waitPromise = new Promise((res, rej) => {
-            sandboxAddon.waitForProcess(pid, execParam, (err, runResult) => {
+            sandboxAddon.waitForProcess(pid, execParam, (err: unknown, runResult: { code: number; status: string }) => {
                 if (err) {
                     try {
                         myFather.stop();

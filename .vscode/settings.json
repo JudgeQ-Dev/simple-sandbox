@@ -61,12 +61,20 @@
         "utility": "cpp"
     },
     "cSpell.words": [
+        "bumpp",
         "CDCMAKE",
         "cmake",
+        "esmo",
+        "judgeq",
         "mkdir",
         "Napi",
         "pnpm",
+        "randomstring",
         "rootfs",
-        "sandboxed"
+        "sandboxed",
+        "vite",
+        "vitest",
+        "stdlib",
+        "libc"
     ]
 }
