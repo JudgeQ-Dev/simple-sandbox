@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=https://json-schema.org/draft-07/schema#
-name: Test
+name: Lint
 
 on:
   push:
@@ -10,9 +10,8 @@ on:
       - main
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
 
@@ -29,15 +28,11 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
 
-      - name: Set node version to ${{ matrix.node }}
+      - name: Set node
         uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: 16.x
           cache: pnpm
-
-      - name: Install deps
-        run: |
-          sudo apt install libfmt-dev
 
       - name: Setup
         run: npm i -g @antfu/ni
@@ -45,8 +40,6 @@ jobs:
       - name: Install
         run: nci
 
-      - name: Build
-        run: nr build
-
-      - name: Test
-        run: nr test
+      - name: Lint
+        run: |
+          nr lint
