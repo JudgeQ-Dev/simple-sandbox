@@ -54,7 +54,12 @@ Pull the repository to somewhere on your computer and run
 
 ```bash
 # Install required packages and compile C++ code with the clang++-11 compiler
-CC=clang CXX=clang++ CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++ -lc++abi -fuse-ld=lld" pnpm install
+CC=clang \
+CXX=clang++ \
+CXXFLAGS="-stdlib=libc++" \
+LDFLAGS="-stdlib=libc++ -lc++abi -fuse-ld=lld" \
+pnpm install
+
 # Compile typescript code.
 pnpm run build
 ```
