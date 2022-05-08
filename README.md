@@ -14,7 +14,7 @@ A simple linux sandbox with Node.js API.
 
 You need to have the `build-essentials` (`g++`, `make`, etc.) and the `fmt` library installed in your system in order to build the C++ part.
 
-The minimal `g++` version required is `g++-8`. A newer version of `clang++` with C++17 file system support is recommended.
+The minimal `g++` version required is `g++-11`. A newer version of `clang++` with C++17 file system support is recommended.
 
 Install them by (in Ubuntu 20.04):
 
@@ -54,14 +54,12 @@ Pull the repository to somewhere on your computer and run
 
 ```bash
 # Install required packages and compile C++ code with the clang++-11 compiler
-CXX=clang++-11 pnpm install
+CC=clang CXX=clang++ CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++ -lc++abi -fuse-ld=lld" pnpm install
 # Compile typescript code.
 pnpm run build
 ```
 
 To build the project. If you don't want to use `pnpm`, just change `pnpm` to `npm` or `yarn`.
-
-You can use `pnpm run build:watch` to watch for the change of typescript file.
 
 ## Use
 

@@ -191,7 +191,7 @@ public:
 };
 
 void NodeWaitForProcess(const Napi::CallbackInfo &info) {
-    Napi::Env env = info.Env();
+    // Napi::Env env = info.Env();
 
     pid_t pid = info[0].ToNumber().Int32Value();
     void *executionParameter = *reinterpret_cast<void **>(info[1].As<Napi::ArrayBuffer>().Data());
