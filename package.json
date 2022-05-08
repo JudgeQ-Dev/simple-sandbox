@@ -41,7 +41,7 @@
     "sideEffects": false,
     "scripts": {
         "install": "cmake-js compile --CDCMAKE_EXPORT_COMPILE_COMMANDS --cc=clang --cxx=clang++ --CDCMAKE_CXX_FLAGS=-stdlib=libc++ --CDCMAKE_EXE_LINKER_FLAGS=\"-stdlib=libc++ -lc++abi -fuse-ld=lld\"",
-        "clean": "rm -rf ./build",
+        "clean": "rimraf ./build",
         "build": "unbuild",
         "dev": "unbuild --stub",
         "start": "esmo src/index.ts",
