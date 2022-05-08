@@ -40,7 +40,7 @@
     ],
     "sideEffects": false,
     "scripts": {
-        "install": "rimraf ./build && cmake-js compile --CDCMAKE_EXPORT_COMPILE_COMMANDS",
+        "install": "cmake-js compile --CDCMAKE_EXPORT_COMPILE_COMMANDS",
         "clean": "rimraf ./build",
         "build": "unbuild",
         "dev": "unbuild --stub",
