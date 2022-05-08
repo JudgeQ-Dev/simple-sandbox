@@ -17,6 +17,7 @@ export class SandboxProcess {
     constructor(public readonly parameter: SandboxParameter, public readonly pid: number, execParam: ArrayBuffer) {
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const myFather = this;
+
         // Stop the sandboxed process on Node.js exit.
         this.stopCallback = () => {
             myFather.stop();
@@ -36,6 +37,7 @@ export class SandboxProcess {
                 const val = Number(
                     sandboxAddon.getCgroupProperty("cpuacct", myFather.parameter.cgroup, "cpuacct.usage"),
                 );
+
                 myFather.countedCpuTime += Math.max(
                     val - myFather.actualCpuTime, // The real time, or if less than 40%,
                     utils.milliToNano(spent) * 0.4, // 40% of actually elapsed time
