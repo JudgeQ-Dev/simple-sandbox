@@ -42,7 +42,8 @@ jobs:
         run: npm i -g @antfu/ni
 
       - name: Install
-        run: nci
+        run: |
+          CC=clang CXX=clang++ CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++ -lc++abi -fuse-ld=lld" nci
 
       - name: Lint
         run: |
