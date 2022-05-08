@@ -47,7 +47,7 @@
         "start": "esmo src/index.ts",
         "test": "vitest",
         "lint": "run-p lint:*",
-        "lint:build": "tsc --noEmit ./src/*.ts",
+        "lint:build": "tsc --noEmit",
         "lint:eslint": "eslint ./src/*.ts ./test/*.ts",
         "lint:style": "prettier --check ./src/*.ts ./test/*.ts",
         "format": "run-p format:*",
