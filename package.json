@@ -1,6 +1,6 @@
 {
     "name": "@judgeq/simple-sandbox",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "packageManager": "pnpm@7.0.0",
     "description": "A simple sandbox for Node.js using Linux namespaces and cgroup.",
     "author": "JudgeQ <hi@judgeq.com>",
