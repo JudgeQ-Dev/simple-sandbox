@@ -102,8 +102,10 @@ struct SandboxParameter {
     std::string hostname;
 };
 
-void GetUserEntryInSandbox(
-        const std::filesystem::path &rootfs, const std::string username, std::vector<char> &dataBuffer, passwd &entry);
+void GetUserEntryInSandbox(const std::filesystem::path &rootfs,
+                           const std::string username,
+                           std::vector<char> &dataBuffer,
+                           passwd &entry);
 
 void *StartSandbox(const SandboxParameter &, pid_t &);
 

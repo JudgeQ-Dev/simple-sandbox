@@ -108,8 +108,10 @@ static void EnsureDirectoryExistance(fs::path dir) {
     }
 }
 
-void GetUserEntryInSandbox(
-        const fs::path &rootfs, const std::string username, std::vector<char> &dataBuffer, passwd &entry) {
+void GetUserEntryInSandbox(const fs::path &rootfs,
+                           const std::string username,
+                           std::vector<char> &dataBuffer,
+                           passwd &entry) {
     auto passwdFilePath = rootfs / "etc" / "passwd";
     std::unique_ptr<FILE, decltype(&fclose)> passwdFile(fopen(passwdFilePath.c_str(), "r"), &fclose);
 
@@ -156,8 +158,11 @@ static int ChildProcess(void *param_ptr) {
         ENSURE(mount("none", "/", NULL, MS_REC | MS_PRIVATE, NULL));  // Make root private
 
         EnsureDirectoryExistance(parameter.chrootDirectory);
-        ENSURE(mount(parameter.chrootDirectory.string().c_str(), parameter.chrootDirectory.string().c_str(), "",
-                MS_BIND | MS_RDONLY | MS_REC, ""));
+        ENSURE(mount(parameter.chrootDirectory.string().c_str(),
+                     parameter.chrootDirectory.string().c_str(),
+                     "",
+                     MS_BIND | MS_RDONLY | MS_REC,
+                     ""));
         ENSURE(mount(
                 "", parameter.chrootDirectory.string().c_str(), "", MS_BIND | MS_REMOUNT | MS_RDONLY | MS_REC, ""));
 
@@ -257,9 +262,10 @@ void *StartSandbox(const SandboxParameter &parameter, pid_t &container_pid) {
         std::unique_ptr<ExecutionParameter> execParam =
                 std::make_unique<ExecutionParameter>(parameter, O_CLOEXEC | O_NONBLOCK);
 
-        container_pid = ENSURE(clone(ChildProcess, &*childStack.end(),
-                CLONE_NEWNET | CLONE_NEWUTS | CLONE_NEWPID | CLONE_NEWNS | SIGCHLD,
-                const_cast<void *>(reinterpret_cast<const void *>(execParam.get()))));
+        container_pid = ENSURE(clone(ChildProcess,
+                                     &*childStack.end(),
+                                     CLONE_NEWNET | CLONE_NEWUTS | CLONE_NEWPID | CLONE_NEWNS | SIGCHLD,
+                                     const_cast<void *>(reinterpret_cast<const void *>(execParam.get()))));
 
         CgroupInfo memInfo("memory", parameter.cgroupName), cpuInfo("cpuacct", parameter.cgroupName),
                 pidInfo("pids", parameter.cgroupName);
