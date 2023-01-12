@@ -39,52 +39,52 @@ using std::string;
 using std::vector;
 
 // Make sure fd 0,1,2 exists.
-static void RedirectIO(const SandboxParameter &param, int nullfd) {
+static void RedirectIO(const SandboxParameter &param, int null_fd) {
     const string &std_input = param.stdinRedirection, std_output = param.stdoutRedirection,
                  std_error = param.stderrRedirection;
 
-    int inputfd = 0, outputfd = 0, errorfd = 0;
+    int input_fd = 0, output_fd = 0, error_fd = 0;
     if (param.stdinRedirectionFileDescriptor == -1) {
         if (std_input != "") {
-            inputfd = ENSURE(open(std_input.c_str(), O_RDONLY));
+            input_fd = ENSURE(open(std_input.c_str(), O_RDONLY));
         } else {
-            inputfd = nullfd;
+            input_fd = null_fd;
         }
     } else {
-        inputfd = param.stdinRedirectionFileDescriptor;
+        input_fd = param.stdinRedirectionFileDescriptor;
     }
 
-    ENSURE(dup2(inputfd, STDIN_FILENO));
+    ENSURE(dup2(input_fd, STDIN_FILENO));
 
     if (param.stdoutRedirectionFileDescriptor == -1) {
         if (std_output != "") {
-            outputfd = ENSURE(
+            output_fd = ENSURE(
                     open(std_output.c_str(), O_WRONLY | O_TRUNC | O_CREAT, S_IWUSR | S_IRUSR | S_IRGRP | S_IWGRP));
         } else {
-            outputfd = nullfd;
+            output_fd = null_fd;
         }
     } else {
-        outputfd = param.stdoutRedirectionFileDescriptor;
+        output_fd = param.stdoutRedirectionFileDescriptor;
     }
 
-    ENSURE(dup2(outputfd, STDOUT_FILENO));
+    ENSURE(dup2(output_fd, STDOUT_FILENO));
 
     if (param.stderrRedirectionFileDescriptor == -1) {
         if (std_error != "") {
             if (std_error == std_output) {
-                errorfd = outputfd;
+                error_fd = output_fd;
             } else {
-                errorfd = ENSURE(
+                error_fd = ENSURE(
                         open(std_error.c_str(), O_WRONLY | O_TRUNC | O_CREAT, S_IWUSR | S_IRUSR | S_IRGRP | S_IWGRP));
             }
         } else {
-            errorfd = nullfd;
+            error_fd = null_fd;
         }
     } else {
-        errorfd = param.stderrRedirectionFileDescriptor;
+        error_fd = param.stderrRedirectionFileDescriptor;
     }
 
-    ENSURE(dup2(errorfd, STDERR_FILENO));
+    ENSURE(dup2(error_fd, STDERR_FILENO));
 }
 
 struct ExecutionParameter {
@@ -92,13 +92,13 @@ struct ExecutionParameter {
 
     PosixSemaphore semaphore1, semaphore2;
     // This pipe is used to forward error message from the child process to the parent.
-    PosixPipe pipefd;
+    PosixPipe pipe_fd;
 
     ExecutionParameter(const SandboxParameter &param, int pipeOptions)
-            : parameter(param), semaphore1(true, 0), semaphore2(true, 0), pipefd(pipeOptions) {}
+            : parameter(param), semaphore1(true, 0), semaphore2(true, 0), pipe_fd(pipeOptions) {}
 };
 
-static void EnsureDirectoryExistance(fs::path dir) {
+static void EnsureDirectoryExistence(fs::path dir) {
     if (!fs::exists(dir)) {
         throw std::runtime_error((format("The specified path {} does not exist.", dir)));
     }
@@ -148,16 +148,16 @@ static int ChildProcess(void *param_ptr) {
     SandboxParameter parameter = execParam.parameter;
 
     try {
-        ENSURE(close(execParam.pipefd[0]));
+        ENSURE(close(execParam.pipe_fd[0]));
 
-        int nullfd = ENSURE(open("/dev/null", O_RDWR));
+        int null_fd = ENSURE(open("/dev/null", O_RDWR));
         if (parameter.redirectBeforeChroot) {
-            RedirectIO(parameter, nullfd);
+            RedirectIO(parameter, null_fd);
         }
 
         ENSURE(mount("none", "/", NULL, MS_REC | MS_PRIVATE, NULL));  // Make root private
 
-        EnsureDirectoryExistance(parameter.chrootDirectory);
+        EnsureDirectoryExistence(parameter.chrootDirectory);
         ENSURE(mount(parameter.chrootDirectory.string().c_str(),
                      parameter.chrootDirectory.string().c_str(),
                      "",
@@ -173,8 +173,8 @@ static int ChildProcess(void *param_ptr) {
 
             fs::path target = parameter.chrootDirectory / std::filesystem::relative(info.dst, "/");
 
-            EnsureDirectoryExistance(info.src);
-            EnsureDirectoryExistance(target);
+            EnsureDirectoryExistence(info.src);
+            EnsureDirectoryExistence(target);
             ENSURE(mount(info.src.string().c_str(), target.string().c_str(), "", MS_BIND | MS_REC, ""));
             if (info.limit == 0) {
                 ENSURE(mount("", target.string().c_str(), "", MS_BIND | MS_REMOUNT | MS_RDONLY | MS_REC, ""));
@@ -191,7 +191,7 @@ static int ChildProcess(void *param_ptr) {
         }
 
         if (!parameter.redirectBeforeChroot) {
-            RedirectIO(parameter, nullfd);
+            RedirectIO(parameter, null_fd);
         }
 
         if (!parameter.hostname.empty()) {
@@ -221,7 +221,7 @@ static int ChildProcess(void *param_ptr) {
 
         int temp = -1;
         // Inform the parent that no exception occurred.
-        ENSURE(write(execParam.pipefd[1], &temp, sizeof(int)));
+        ENSURE(write(execParam.pipe_fd[1], &temp, sizeof(int)));
 
         // Inform our parent that we are ready to go.
         execParam.semaphore1.Post();
@@ -236,9 +236,9 @@ static int ChildProcess(void *param_ptr) {
         const char *errMessage = err.what();
         int len = static_cast<int>(strlen(errMessage));
         try {
-            ENSURE(write(execParam.pipefd[1], &len, sizeof(int)));
-            ENSURE(write(execParam.pipefd[1], errMessage, len));
-            ENSURE(close(execParam.pipefd[1]));
+            ENSURE(write(execParam.pipe_fd[1], &len, sizeof(int)));
+            ENSURE(write(execParam.pipe_fd[1], errMessage, len));
+            ENSURE(close(execParam.pipe_fd[1]));
             execParam.semaphore1.Post();
             return 1;
         } catch (...) {
@@ -299,7 +299,7 @@ void *StartSandbox(const SandboxParameter &parameter, pid_t &container_pid) {
         bool waitResult = execParam->semaphore1.TimedWait(500);
 
         int errLen = 0;
-        int bytesRead = static_cast<int>(read(execParam->pipefd[0], &errLen, sizeof(int)));
+        int bytesRead = static_cast<int>(read(execParam->pipe_fd[0], &errLen, sizeof(int)));
         // Child will be killed once the error has been thrown.
         if (!waitResult || bytesRead == 0 || bytesRead == -1) {
             if (waitpid(container_pid, nullptr, WNOHANG) == 0) {
@@ -312,7 +312,7 @@ void *StartSandbox(const SandboxParameter &parameter, pid_t &container_pid) {
 
         } else if (errLen != -1) {  // -1 indicates OK.
             vector<char> buf(errLen);
-            ENSURE(read(execParam->pipefd[0], &*buf.begin(), errLen));
+            ENSURE(read(execParam->pipe_fd[0], &*buf.begin(), errLen));
             string errstr(buf.begin(), buf.end());
             throw std::runtime_error((format("The child process has reported the following error: {}", errstr)));
         }
@@ -345,10 +345,10 @@ ExecutionResult WaitForProcess(pid_t pid, void *executionParameter) {
 
     // Try reading error message first
     int errLen = 0;
-    int bytesRead = static_cast<int>(read(execParam->pipefd[0], &errLen, sizeof(int)));
+    int bytesRead = static_cast<int>(read(execParam->pipe_fd[0], &errLen, sizeof(int)));
     if (bytesRead > 0) {
         vector<char> buf(errLen);
-        ENSURE(read(execParam->pipefd[0], &*buf.begin(), errLen));
+        ENSURE(read(execParam->pipe_fd[0], &*buf.begin(), errLen));
         string errstr(buf.begin(), buf.end());
         throw std::runtime_error((format("The child process has reported the following error: {}", errstr)));
     }

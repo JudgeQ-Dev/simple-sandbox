@@ -63,18 +63,19 @@
     "cSpell.words": [
         "bumpp",
         "CDCMAKE",
+        "cgroups",
         "cmake",
         "esmo",
         "judgeq",
+        "libc",
         "mkdir",
         "Napi",
         "pnpm",
         "randomstring",
         "rootfs",
         "sandboxed",
-        "vite",
-        "vitest",
         "stdlib",
-        "libc"
+        "vite",
+        "vitest"
     ]
 }
